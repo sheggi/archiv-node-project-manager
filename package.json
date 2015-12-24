@@ -1,0 +1,13 @@
+{
+  "name": "typescript",
+  "version": "0.0.1",
+  "description": "Testproject with nodejs and typescript",
+  "main": "runNode.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sheggi",
+  "license": "ISC",
+  "dependencies": {
+  }
+}

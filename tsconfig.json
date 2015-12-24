@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "outDir": "./built/",
+    "sourceMap": true
+  },
+  "files" : [
+    "src/testwithnode.ts",
+    "src/project.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
