@@ -7,7 +7,7 @@ export class Settings {
     storagefile:String;
     rootdir:String;
     system:String;
-    status:String;
+    status:String; // DEBUG(debugging), RELEASE(released)
 
 
     private static instance:Settings;
@@ -33,5 +33,9 @@ export class Settings {
                 this[key] = settings[key];
             }
         });
+    }
+
+    debug() {
+        return this.status == "debug";
     }
 }
