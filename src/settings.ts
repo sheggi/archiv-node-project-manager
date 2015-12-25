@@ -4,15 +4,15 @@
 
 // Factory Implementation
 export class Settings {
-    storagefile: String;
-    rootdir: String;
-    system: String;
-    status: String;
+    storagefile:String;
+    rootdir:String;
+    system:String;
+    status:String;
 
 
-    private static instance: Settings;
+    private static instance:Settings;
 
-    constructor(){
+    constructor() {
         this.status = "";
         this.rootdir = "";
         this.system = "";
@@ -20,16 +20,16 @@ export class Settings {
 
     }
 
-    static get Instace(){
+    static get Instace() {
         if (this.instance === null || this.instance === undefined) {
             this.instance = new Settings();
         }
         return this.instance;
     }
 
-    loadSettings(settings: any){
+    loadSettings(settings:any) {
         Object.keys(this).map(key => {
-            if(settings[key] !== undefined){
+            if (settings[key] !== undefined) {
                 this[key] = settings[key];
             }
         });

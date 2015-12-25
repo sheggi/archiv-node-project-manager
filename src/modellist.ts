@@ -4,7 +4,7 @@
 
 import {Model} from "./model";
 
-export class ModelList extends Model{
+export class ModelList extends Model {
     list:Model[];
 
     constructor() {

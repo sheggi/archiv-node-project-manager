@@ -14,7 +14,6 @@ var settings = Settings.Instace;
 var settings_path = __dirname + "/../env/settings.json";
 
 
-
 var exec = function (settings) {
 
     var projects = new ModelList();
@@ -38,26 +37,26 @@ var exec = function (settings) {
 
     saveAll(projects.getAll(), settings);
 
-}
-var saveAll  = function(list, settings){
+};
+
+var saveAll = function (list, settings) {
     list.map(project => {
         var path = settings.rootdir + project.mainDir + settings.storagefile;
         var data = JSON.stringify(project, null, ' ');
         fs.writeFile(path, data, err => {
-            if(err){
+            if (err) {
                 console.error(err);
             }
-            if(settings.status == 'debug'){
-                console.log("Projekt "+project._id+" gespeichert");
+            if (settings.status == 'debug') {
+                console.log("Projekt " + project._id + " gespeichert");
             }
         });
 
     })
-}
+};
 
 
-
-fs.readFile( settings_path, function (err, data) {
+fs.readFile(settings_path, function (err, data) {
     if (err) {
         throw err;
     }
