@@ -1,6 +1,8 @@
 /**
  * Created by sheggi on 24.12.15.
  */
+"use strict";
+
 var counter = 0;
 export class Model {
     _type:String;

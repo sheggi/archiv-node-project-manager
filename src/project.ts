@@ -1,9 +1,9 @@
-import {settings} from "cluster";
+/**
+ * Created by sheggi on 25.12.15.
+ */
 "use strict";
 
 import {Model} from "./model";
-import {Settings} from "./settings";
-import * as fs from "fs";
 
 export class Project extends Model {
     name:String;

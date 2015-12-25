@@ -1,6 +1,7 @@
 /**
  * Created by sheggi on 25.12.15.
  */
+"use strict";
 
 import {Model} from "./model";
 
