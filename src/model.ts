@@ -3,7 +3,7 @@
  */
 "use strict";
 
-var counter = 0;
+var counter = Math.round(Math.random() * 100);
 export class Model {
     _type:string;
     _id:string;
