@@ -10,12 +10,10 @@ export class Project extends Model {
     description:string;
     status:string;
 
-    constructor(name:string, description:string) {
-        super();
+    constructor(data:any = {}) {
         this._type = "project";
         this.status = "new";
-        this.name = name;
-        this.description = description;
+        super(data);
     }
 
     getSummary() {
@@ -29,31 +27,17 @@ export class Project extends Model {
 
 export class OfficeProject extends Project {
     mainDir:string;
-    relDir:string[];
 
-    constructor(proj:OfficeProject) {
-        super(proj.name, proj.description);
-        this.relDir = [];
-        this.mainDir = proj.mainDir;
-        Object.keys(this).map(key => {
-            if (proj[key] !== undefined && typeof this[key] !== 'function') {
-                this[key] = proj[key];
-            }
-        });
+    constructor(data:any = {}) {
+        this.mainDir = "";
+        super(data);
     }
 
     /*constructor(name:string, description:string, mainDir:string) {
-        super(name, description);
-        this.relDir = [];
-        this.mainDir = mainDir;
+     super(name, description);
+     this.mainDir = mainDir;
      }*/
 
-
-    addDir(dir:string) {
-        this.relDir.push(dir);
-    }
 }
-
-
 
 
