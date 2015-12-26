@@ -6,11 +6,11 @@
 import {Model} from "./model";
 
 export class Project extends Model {
-    name:String;
-    description:String;
-    status:String;
+    name:string;
+    description:string;
+    status:string;
 
-    constructor(name:String, description:String) {
+    constructor(name:string, description:string) {
         super();
         this._type = "project";
         this.status = "new";
@@ -28,8 +28,8 @@ export class Project extends Model {
 }
 
 export class OfficeProject extends Project {
-    mainDir:String;
-    relDir:String[];
+    mainDir:string;
+    relDir:string[];
 
     constructor(proj:OfficeProject) {
         super(proj.name, proj.description);
@@ -42,14 +42,14 @@ export class OfficeProject extends Project {
         });
     }
 
-    /*constructor(name:String, description:String, mainDir:String) {
+    /*constructor(name:string, description:string, mainDir:string) {
         super(name, description);
         this.relDir = [];
         this.mainDir = mainDir;
      }*/
 
 
-    addDir(dir:String) {
+    addDir(dir:string) {
         this.relDir.push(dir);
     }
 }

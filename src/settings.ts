@@ -4,10 +4,10 @@
 
 // Factory Implementation
 export class Settings {
-    storagefile:String;
-    rootdir:String;
-    system:String;
-    status:String; // DEBUG(debugging), RELEASE(released)
+    storagefile:string;
+    rootdir:string;
+    system:string;
+    status:string; // DEBUG(debugging), RELEASE(released)
 
 
     private static instance:Settings;

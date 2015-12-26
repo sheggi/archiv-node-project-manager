@@ -5,8 +5,8 @@
 
 var counter = 0;
 export class Model {
-    _type:String;
-    _id:String;
+    _type:string;
+    _id:string;
     _link:Model[];
 
     constructor() {

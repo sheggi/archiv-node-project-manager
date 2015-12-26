@@ -13,7 +13,7 @@ if (typeof String.prototype.endsWith !== 'function') {
 }
 export module Utils {
 // http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
-    export function listProjectPath(dir:String, done:Function) {
+    export function listProjectPath(dir:string, done:Function) {
         var results = [];
         fs.readdir(dir, function (err, list) {
             if (err) return done(err);
