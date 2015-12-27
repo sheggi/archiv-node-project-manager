@@ -118,7 +118,6 @@ var mergeResults = (function () {
     };
 })();
 
-
 var saveAll = function (list, settings) {
     list.map(project => {
         var dir = path.resolve(settings.rootdir, project.mainDir, settings.storagefile);
@@ -131,9 +130,9 @@ var saveAll = function (list, settings) {
                 console.log("Projekt " + project._id + " gespeichert");
             }
         });
-
     })
 };
+
 
 var getSettings = function (callback) {
     fs.readFile(settings_path, function (err, data) {

@@ -145,5 +145,43 @@ export module Utils {
         });
     } // end of function
 
+    export function saveProject(project:OfficeProject) {
+        var settings = Settings.Instace;
+        var dir = path.resolve(settings.rootdir, project.mainDir, settings.storagefile);
+        var data = project.stringify();
+        fs.writeFile(dir, data, err => {
+            if (err) {
+                console.error(err);
+            }
+            if (settings.status == 'debug') {
+                console.log("Projekt " + project._id + " gespeichert");
+            }
+        });
+    } // end of function
+
+    export function loadProject(dir:string, callback:Function) {
+        var settings = Settings.Instace;
+        var storagefile = path.resolve(dir, settings.storagefile);
+        fs.stat(storagefile, (err, stat) => {
+            if (stat && stat.isFile()) {
+
+                var proj = new OfficeProject();
+                var data = fs.readFileSync(storagefile);
+                var obj = JSON.parse(data);
+
+                proj.parse(obj);
+
+                if (callback !== undefined) {
+                    callback(null, proj);
+                }
+            } else {
+
+                if (callback !== undefined) {
+                    callback("storage file not found: " + storagefile, null);
+                }
+            }
+
+        });
+    }
 
 }// end of module
