@@ -22,7 +22,7 @@ export class ModelList extends Model {
         this.list.splice(this.list.indexOf(project));
     }
 
-    getAll() {
+    getList() {
         return this.list;
     }
 

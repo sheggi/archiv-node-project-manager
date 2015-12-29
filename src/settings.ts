@@ -16,7 +16,7 @@ export class Settings {
         this.status = "";
         this.rootdir = "";
         this.system = "";
-        this.storagefile = "";
+        this.storagefile = "storagefile.json";
 
     }
 
@@ -27,10 +27,10 @@ export class Settings {
         return this.instance;
     }
 
-    loadSettings(settings:any) {
+    parse(data:any) {
         Object.keys(this).map(key => {
-            if (settings[key] !== undefined) {
-                this[key] = settings[key];
+            if (data[key] !== undefined) {
+                this[key] = data[key];
             }
         });
     }

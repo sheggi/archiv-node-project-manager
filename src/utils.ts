@@ -1,4 +1,3 @@
-
 /**
  * Created by sheggi on 25.12.15.
  */
@@ -29,7 +28,8 @@ export module Utils {
                     if (stat && stat.isDirectory()) {
 
                         if (file.indexOf(path.sep + ".") <= 0 && file.indexOf("Projekte") + 8 >= file.lastIndexOf(path.sep) && !file.endsWith("Projekte")) { // check if path starts with '.'
-                            results.push(file);
+                            if (results.indexOf(file) < 0)
+                                results.push(file);
                         }
 
                         listProjectPath(file, function (err, res) {
@@ -40,7 +40,7 @@ export module Utils {
                         var fileName = path.basename(file);
                         if (fileName == Settings.Instace.storagefile) {
                             var directory = path.dirname(file);
-                            if (results.indexOf(directory) <= 0) {
+                            if (results.indexOf(directory) < 0) {
                                 results.push(directory);
                             }
                         }
@@ -63,6 +63,7 @@ export module Utils {
                 fs.stat(file, function (err, stat) {
 
                     if (condition(stat, file)) {
+                        if (results.indexOf(file) < 0)
                         results.push(file);
                     }
 
@@ -97,15 +98,17 @@ export module Utils {
             if (file.toLowerCase().lastIndexOf("projekte") > file.lastIndexOf(path.sep) || file.toLowerCase().lastIndexOf("projects") > file.lastIndexOf(path.sep)) {
                 return false;
             }
-            return !!(file.toLowerCase().lastIndexOf("projekt") > file.lastIndexOf(path.sep) || file.toLowerCase().lastIndexOf("project") > file.lastIndexOf(path.sep));
-
+            if (file.toLowerCase().lastIndexOf("projekt") > file.lastIndexOf(path.sep) || file.toLowerCase().lastIndexOf("project") > file.lastIndexOf(path.sep)) {
+                return true;
+            }
+            return false;
         });
     } // end of function
 
 
-    var project_count = 0;
-
-    export function createProjectByPath(settings:Settings, paths:string[], callback:Function) {
+    export function createProjectByPath(paths:string[], callback:Function) {
+        var settings = Settings.Instace;
+        var project_count = 0;
         if (settings.debug())
             console.log("###MERGED");
         var projects = new ModelList();
@@ -114,17 +117,8 @@ export module Utils {
             if (settings.debug())
                 console.log("*", dir);
 
-            var storagefile = path.resolve(dir, settings.storagefile);
-            fs.stat(storagefile, (err, stat) => {
-                if (stat && stat.isFile()) {
-
-                    var data = fs.readFileSync(storagefile);
-                    var obj = JSON.parse(data);
-
-                    var proj = new OfficeProject(obj);
-                    projects.add(proj);
-
-                } else {
+            Utils.loadProject(dir, (err, project) => {
+                if (err) {
 
                     var proj = new OfficeProject();
                     proj.name = dir.slice(dir.lastIndexOf(path.sep) + 1);
@@ -134,54 +128,82 @@ export module Utils {
 
 
                     projects.add(proj);
+                } else {
+                    projects.add(project);
                 }
+
                 project_count++;
                 if (project_count >= paths.length) {
                     callback(projects);
                 }
             });
-
-
         });
     } // end of function
 
-    export function saveProject(project:OfficeProject) {
+    export function saveStoragefile(file:string, data:string, callback:(Error)=>void):void {
+        fs.writeFile(file, data, err => {
+            if (typeof callback === 'function') {
+                callback(err);
+            } else {
+                throw "no call back defined";
+            }
+        });
+    } // end of function
+
+    export function loadStoragefile(file:string, callback:(Error, Object)=>void):void {
+        fs.stat(file, (err, stat) => {
+            if (stat && stat.isFile()) {
+                fs.readFile(file, (err, data) => {
+                    if (err) {
+                        callback(err, null);
+                    } else {
+                        callback(null, JSON.parse(data));
+                    }
+                });
+            } else {
+                if (callback !== undefined) {
+                    callback("storagefile not found: " + file, null);
+                }
+            }
+        });
+    } // end of function
+
+    export function saveProject(project:OfficeProject, callback:(err)=>void):void {
         var settings = Settings.Instace;
-        var dir = path.resolve(settings.rootdir, project.mainDir, settings.storagefile);
-        var data = project.stringify();
-        fs.writeFile(dir, data, err => {
-            if (err) {
-                console.error(err);
-            }
-            if (settings.status == 'debug') {
-                console.log("Projekt " + project._id + " gespeichert");
-            }
+        var file = path.resolve(settings.rootdir, project.mainDir, settings.storagefile);
+        Utils.saveStoragefile(file, project.stringify(), err => {
+            callback(err);
         });
     } // end of function
 
-    export function loadProject(dir:string, callback:Function) {
+    export function loadProject(dir:string, callback:(Error, OfficeProject)=>void):void {
         var settings = Settings.Instace;
         var storagefile = path.resolve(dir, settings.storagefile);
-        fs.stat(storagefile, (err, stat) => {
-            if (stat && stat.isFile()) {
-
-                var proj = new OfficeProject();
-                var data = fs.readFileSync(storagefile);
-                var obj = JSON.parse(data);
-
-                proj.parse(obj);
-
-                if (callback !== undefined) {
-                    callback(null, proj);
-                }
+        Utils.loadStoragefile(storagefile, (err, obj) => {
+            if (err) {
+                callback(err, null);
             } else {
-
-                if (callback !== undefined) {
-                    callback("storage file not found: " + storagefile, null);
-                }
+                var proj = new OfficeProject();
+                proj.parse(obj);
+                callback(null, proj);
             }
-
         });
-    }
+    } // end of function
 
+    export function loadSettings(file:string, callback:(Error, Settings)=>void):void {
+        var settings = Settings.Instace;
+        Utils.loadStoragefile(file, (err, obj) => {
+            if (err) {
+                callback(err, null);
+            } else {
+                settings.parse(obj);
+                callback(err, settings);
+            }
+        });
+    } // end of function
+
+    export function saveSettings(file:string, callback:(Error)=>void):void {
+        var settings = Settings.Instace;
+        Utils.saveStoragefile(file, settings, callback);
+    }
 }// end of module
