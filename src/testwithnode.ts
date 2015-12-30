@@ -22,22 +22,26 @@ var endsWith = function (suffix) {
 };
 
 var saveAll = function (list) {
+    if (settings.debug()) {
+        console.log("#SAVE PROJECTS");
+    }
     list.map(project => {
         Utils.saveProject(project, err => {
-            if (err) {
-                console.error(err);
-            }
-            if (settings.status == 'debug') {
-                console.log("Projekt " + project._id + " gespeichert");
+            if (settings.debug()) {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log("Projekt " + project._id + " gespeichert");
+                }
             }
         });
     })
 };
 
-var finishup = function (projects:ModelList) {
+var showAndSaveAll = function (projects:ModelList) {
     if (settings.debug())
         projects.getList().map(proj => {
-            console.log("Projekt: ", proj);
+            console.log("Projekt: ", proj.toString());
         });
     saveAll(projects.getList());
 };
@@ -55,24 +59,24 @@ var mergeResults = (function () {
         });
 
         if (internalcounter >= 2) {
-            Utils.createProjectByPath(results, callback);
+            Utils.createProjectByPaths(results, callback);
         }
     };
 })();
 
 var getProjectPaths = function (callback) {
-    Utils.listProjectPath(settings.rootdir, (err, results) => {
+    Utils.listProjectPaths(settings.rootdir, (err, results) => {
         if (settings.debug()) {
-            console.log("###PROJECTS");
+            console.log("###LIST OF PROJECTS");
             results.forEach(function (file) {
                 console.log("*", file);
             });
         }
         mergeResults(results, callback);
     });
-    Utils.searchProjects(settings.rootdir, settings.storagefile, (err, results) => {
+    Utils.searchProjectPaths(settings.rootdir, settings.storagefile, (err, results) => {
         if (settings.debug())
-            console.log("###PATHS");
+            console.log("###POSIBLE PROJECTS");
         results.forEach(function (file) {
             if (endsWith.call(file, settings.storagefile)) { // remove storagefilename from path
                 var index = results.indexOf(file);
@@ -87,5 +91,18 @@ var getProjectPaths = function (callback) {
 
 // Start Program
 Utils.loadSettings(settings_file, (err, settings) => {
-    getProjectPaths(finishup);
+    if(err){
+        throw err;
+    }
+    getProjectPaths(showAndSaveAll);
+
+    Utils.saveSettings(settings_file,(err) => {
+        if(settings.debug()) {
+            if (err) {
+                throw err;
+            } else {
+                console.log("#SETTINGS SAVED")
+            }
+        }
+    });
 });
