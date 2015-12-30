@@ -20,19 +20,35 @@ var settings_file = path.resolve(__dirname, "../env/settings.json");
 var endsWith = function (suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
+var saveSettings = function(){
+    Utils.saveSettings(settings_file,(err) => {
+        if(settings.debug()) {
+            if (err) {
+                throw err;
+            } else {
+                console.log("#SETTINGS SAVED")
+            }
+        }
+    });
+};
 
 var saveAll = function (list) {
     if (settings.debug()) {
         console.log("#SAVE PROJECTS");
     }
+    var project_count = 0;
     list.map(project => {
         Utils.saveProject(project, err => {
+            project_count++;
             if (settings.debug()) {
                 if (err) {
                     console.error(err);
                 } else {
                     console.log("Projekt " + project._id + " gespeichert");
                 }
+            }
+            if(project_count >= list.length){
+                saveSettings();
             }
         });
     })
@@ -94,15 +110,9 @@ Utils.loadSettings(settings_file, (err, settings) => {
     if(err){
         throw err;
     }
+    if(settings.debug()){
+        console.log("#PROGRAM STARTED");
+    }
     getProjectPaths(showAndSaveAll);
 
-    Utils.saveSettings(settings_file,(err) => {
-        if(settings.debug()) {
-            if (err) {
-                throw err;
-            } else {
-                console.log("#SETTINGS SAVED")
-            }
-        }
-    });
 });
