@@ -1,5 +1,5 @@
 .idea
 node_modules
 built/*
-playground
-env
+playground/*
+env/settings.json
