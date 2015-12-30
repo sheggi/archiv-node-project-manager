@@ -100,7 +100,6 @@ export module Utils {
             if (file.toLowerCase().lastIndexOf("projekt") > file.lastIndexOf(path.sep) || file.toLowerCase().lastIndexOf("project") > file.lastIndexOf(path.sep)) {
                 return true;
             }
-
             return false;
         });
     } // end of function
