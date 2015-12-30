@@ -17,11 +17,9 @@ var settings = Settings.Instace;
 var settings_file = path.resolve(__dirname, "../env/settings.json");
 
 // helper function
-if (typeof String.prototype.endsWith !== 'function') {
-    String.prototype.endsWith = function (suffix) {
-        return this.indexOf(suffix, this.length - suffix.length) !== -1;
-    };
-}
+var endsWith = function (suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
 
 var saveAll = function (list) {
     list.map(project => {
@@ -63,28 +61,28 @@ var mergeResults = (function () {
 })();
 
 var getProjectPaths = function (callback) {
-        Utils.listProjectPath(settings.rootdir, (err, results) => {
-            if (settings.debug()) {
-                console.log("###PROJECTS");
-                results.forEach(function (file) {
-                    console.log("*", file);
-                });
-            }
-            mergeResults(results, callback);
-        });
-        Utils.searchProjects(settings.rootdir, settings.storagefile, (err, results) => {
-            if (settings.debug())
-                console.log("###PATHS");
+    Utils.listProjectPath(settings.rootdir, (err, results) => {
+        if (settings.debug()) {
+            console.log("###PROJECTS");
             results.forEach(function (file) {
-                if (file.endsWith(settings.storagefile)) { // remove storagefilename from path
-                    var index = results.indexOf(file);
-                    file = file.substr(0, file.indexOf(settings.storagefile) - 1);
-                    results[index] = file;
-                }
-                if (settings.debug()) console.log("*", file);
+                console.log("*", file);
             });
-            mergeResults(results, callback);
+        }
+        mergeResults(results, callback);
+    });
+    Utils.searchProjects(settings.rootdir, settings.storagefile, (err, results) => {
+        if (settings.debug())
+            console.log("###PATHS");
+        results.forEach(function (file) {
+            if (endsWith.call(file, settings.storagefile)) { // remove storagefilename from path
+                var index = results.indexOf(file);
+                file = file.substr(0, file.indexOf(settings.storagefile) - 1);
+                results[index] = file;
+            }
+            if (settings.debug()) console.log("*", file);
         });
+        mergeResults(results, callback);
+    });
 };
 
 // Start Program

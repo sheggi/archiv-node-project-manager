@@ -9,11 +9,10 @@ import {OfficeProject} from "./project";
 import {ModelList} from "./modellist";
 
 // helper function
-if (typeof String.prototype.endsWith !== 'function') {
-    String.prototype.endsWith = function (suffix) {
-        return this.indexOf(suffix, this.length - suffix.length) !== -1;
-    };
-}
+var endsWith = function (suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
+
 export module Utils {
 // http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
     export function listProjectPath(dir:string, done:Function):void {
@@ -27,7 +26,7 @@ export module Utils {
                 fs.stat(file, function (err, stat) {
                     if (stat && stat.isDirectory()) {
 
-                        if (file.indexOf(path.sep + ".") <= 0 && file.indexOf("Projekte") + 8 >= file.lastIndexOf(path.sep) && !file.endsWith("Projekte")) { // check if path starts with '.'
+                        if (file.indexOf(path.sep + ".") <= 0 && file.indexOf("Projekte") + 8 >= file.lastIndexOf(path.sep) && !endsWith.call(file,"Projekte")) { // check if path starts with '.'
                             if (results.indexOf(file) < 0)
                                 results.push(file);
                         }
@@ -64,7 +63,7 @@ export module Utils {
 
                     if (condition(stat, file)) {
                         if (results.indexOf(file) < 0)
-                        results.push(file);
+                            results.push(file);
                     }
 
                     if (stat && stat.isDirectory()) {
@@ -85,7 +84,7 @@ export module Utils {
     }// end of function
 
 
-    export function searchProjects(root_path, project_file, callback):string {
+    export function searchProjects(root_path, project_file, callback):void {
         Utils.walk(root_path, callback, function (state, file) {
             if (!state.isDirectory() &&
                 file.endsWith(project_file)) {
@@ -101,12 +100,13 @@ export module Utils {
             if (file.toLowerCase().lastIndexOf("projekt") > file.lastIndexOf(path.sep) || file.toLowerCase().lastIndexOf("project") > file.lastIndexOf(path.sep)) {
                 return true;
             }
+
             return false;
         });
     } // end of function
 
 
-    export function createProjectByPath(paths:string[], callback:Function) {
+    export function createProjectByPath(paths:string[], callback:(project:ModelList)=>void):void {
         var settings = Settings.Instace;
         var project_count = 0;
         if (settings.debug())
@@ -204,6 +204,6 @@ export module Utils {
 
     export function saveSettings(file:string, callback:(Error)=>void):void {
         var settings = Settings.Instace;
-        Utils.saveStoragefile(file, settings, callback);
+        Utils.saveStoragefile(file, settings.stringify(), callback);
     }
 }// end of module

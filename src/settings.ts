@@ -20,14 +20,14 @@ export class Settings {
 
     }
 
-    static get Instace() {
+    static get Instace():Settings {
         if (this.instance === null || this.instance === undefined) {
             this.instance = new Settings();
         }
         return this.instance;
     }
 
-    parse(data:any) {
+    parse(data:any):void {
         Object.keys(this).map(key => {
             if (data[key] !== undefined) {
                 this[key] = data[key];
@@ -35,7 +35,11 @@ export class Settings {
         });
     }
 
-    debug() {
+    stringify():string {
+        return JSON.stringify(this, null, ' ');
+    }
+
+    debug():boolean {
         return this.status == "debug";
     }
 }
