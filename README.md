@@ -10,6 +10,13 @@ The stored date should be readble and editable by a simple editor, therefore i c
 
 At the end the application should provide a simple overview of the projects, sortable by tags and a monitor for changes and informatins about the project.
 
+## How to Use
+
+1. run typescript compiler with ````tsconfig.json````
+2. rename ````env/settings.example.json```` to ````env/settins.json```` and adjust the settings to your system
+2. run the testfile for nodejs with ``` node built/testwithnode.js ```
+3. have fun with playing arround
+
 ## Technologys
 - JavaScript
 - Typescript 
