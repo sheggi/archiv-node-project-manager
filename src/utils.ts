@@ -10,8 +10,8 @@ import {OfficeProject} from "./project";
 import {ModelList} from "./modellist";
 
 // helper function
-var endsWith = function (suffix) {
-    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+var endsWith = function (base, suffix) {
+    return base.indexOf(suffix, base.length - suffix.length) !== -1;
 };
 
 export module Utils {
@@ -27,7 +27,7 @@ export module Utils {
                 fs.stat(file, function (err, stat) {
                     if (stat && stat.isDirectory()) {
 
-                        if (file.indexOf(path.sep + ".") <= 0 && file.indexOf("Projekte") + 8 >= file.lastIndexOf(path.sep) && !endsWith.call(file,"Projekte")) { // check if path starts with '.'
+                        if (file.indexOf(path.sep + ".") <= 0 && file.indexOf("Projekte") + 8 >= file.lastIndexOf(path.sep) && !endsWith(file, "Projekte")) { // check if path starts with '.'
                             if (results.indexOf(file) < 0)
                                 results.push(file);
                         }
@@ -88,7 +88,7 @@ export module Utils {
     export function searchProjectPaths(root_path, project_file, callback):void {
         Utils.walk(root_path, callback, function (state, file) {
             if (!state.isDirectory() &&
-                file.endsWith(project_file)) {
+                endsWith(file, project_file)) {
                 return true;
             }
 
